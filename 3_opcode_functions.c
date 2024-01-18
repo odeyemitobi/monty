@@ -1,59 +1,149 @@
 #include "monty.h"
 
-void monty_nop(stack_t **stack, unsigned int line_number);
-void monty_pchar(stack_t **stack, unsigned int line_number);
-void monty_pstr(stack_t **stack, unsigned int line_number);
-
 /**
- * monty_nop - Does absolutely nothing for the Monty opcode 'nop'.
- * @stack: A pointer to the top mode node of a stack_t linked list.
- * @line_number: The current working line number of a Monty bytecodes file.
+ * _div - divides the second element by the top element of the stack
+ *
+ * @doubly: head of the linked list
+ * @cline: line number;
+ * Return: no return
  */
-void monty_nop(stack_t **stack, unsigned int line_number)
+void _div(stack_t **doubly, unsigned int cline)
 {
-	(void)stack;
-	(void)line_number;
+	int m = 0;
+	stack_t *aux = NULL;
+
+	aux = *doubly;
+
+	for (; aux != NULL; aux = aux->next, m++)
+		;
+
+	if (m < 2)
+	{
+		dprintf(2, "L%u: can't div, stack too short\n", cline);
+		free_vglo();
+		exit(EXIT_FAILURE);
+	}
+
+	if ((*doubly)->n == 0)
+	{
+		dprintf(2, "L%u: division by zero\n", cline);
+		free_vglo();
+		exit(EXIT_FAILURE);
+	}
+
+	aux = (*doubly)->next;
+	aux->n /= (*doubly)->n;
+	_pop(doubly, cline);
 }
 
 /**
- * monty_pchar - Prints the character in the top value
- *               node of a stack_t linked list.
- * @stack: A pointer to the top mode node of a stack_t linked list.
- * @line_number: The current working line number of a Monty bytecodes file.
+ * _mul - multiplies the top element to the second top element of the stack
+ *
+ * @doubly: head of the linked list
+ * @cline: line number;
+ * Return: no return
  */
-void monty_pchar(stack_t **stack, unsigned int line_number)
+void _mul(stack_t **doubly, unsigned int cline)
 {
-	if ((*stack)->next == NULL)
+	int m = 0;
+	stack_t *aux = NULL;
+
+	aux = *doubly;
+
+	for (; aux != NULL; aux = aux->next, m++)
+		;
+
+	if (m < 2)
 	{
-		set_op_tok_error(pchar_error(line_number, "stack empty"));
-		return;
-	}
-	if ((*stack)->next->n < 0 || (*stack)->next->n > 127)
-	{
-		set_op_tok_error(pchar_error(line_number,
-									 "value out of range"));
-		return;
+		dprintf(2, "L%u: can't mul, stack too short\n", cline);
+		free_vglo();
+		exit(EXIT_FAILURE);
 	}
 
-	printf("%c\n", (*stack)->next->n);
+	aux = (*doubly)->next;
+	aux->n *= (*doubly)->n;
+	_pop(doubly, cline);
 }
 
 /**
- * monty_pstr - Prints the string contained in a stack_t linked list.
- * @stack: A pointer to the top mode node of a stack_t linked list.
- * @line_number: The current working line number of a Monty bytecodes file.
+ * _mod - computes the rest of the division of the second element
+ * by the top element of the stack
+ *
+ * @doubly: head of the linked list
+ * @cline: line number;
+ * Return: no return
  */
-void monty_pstr(stack_t **stack, unsigned int line_number)
+void _mod(stack_t **doubly, unsigned int cline)
 {
-	stack_t *tmp = (*stack)->next;
+	int m = 0;
+	stack_t *aux = NULL;
 
-	while (tmp && tmp->n != 0 && (tmp->n > 0 && tmp->n <= 127))
+	aux = *doubly;
+
+	for (; aux != NULL; aux = aux->next, m++)
+		;
+
+	if (m < 2)
 	{
-		printf("%c", tmp->n);
-		tmp = tmp->next;
+		dprintf(2, "L%u: can't mod, stack too short\n", cline);
+		free_vglo();
+		exit(EXIT_FAILURE);
+	}
+
+	if ((*doubly)->n == 0)
+	{
+		dprintf(2, "L%u: division by zero\n", cline);
+		free_vglo();
+		exit(EXIT_FAILURE);
+	}
+
+	aux = (*doubly)->next;
+	aux->n %= (*doubly)->n;
+	_pop(doubly, cline);
+}
+/**
+ * _pchar - print the char value of the first element
+ *
+ * @doubly: head of the linked list
+ * @cline: line number;
+ * Return: no return
+ */
+void _pchar(stack_t **doubly, unsigned int cline)
+{
+	if (doubly == NULL || *doubly == NULL)
+	{
+		dprintf(2, "L%u: can't pchar, stack empty\n", cline);
+		free_vglo();
+		exit(EXIT_FAILURE);
+	}
+	if ((*doubly)->n < 0 || (*doubly)->n >= 128)
+	{
+		dprintf(2, "L%u: can't pchar, value out of range\n", cline);
+		free_vglo();
+		exit(EXIT_FAILURE);
+	}
+	printf("%c\n", (*doubly)->n);
+}
+
+/**
+ * _pstr - prints the string of the stack
+ *
+ * @doubly: head of the linked list
+ * @cline: line number;
+ * Return: no return
+ */
+void _pstr(stack_t **doubly, unsigned int cline)
+{
+	stack_t *aux;
+	(void)cline;
+
+	aux = *doubly;
+
+	while (aux && aux->n > 0 && aux->n < 128)
+	{
+		printf("%c", aux->n);
+		aux = aux->next;
 	}
 
 	printf("\n");
-
-	(void)line_number;
 }

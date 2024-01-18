@@ -1,80 +1,63 @@
 #include "monty.h"
 
-void monty_rotl(stack_t **stack, unsigned int line_number);
-void monty_rotr(stack_t **stack, unsigned int line_number);
-void monty_stack(stack_t **stack, unsigned int line_number);
-void monty_queue(stack_t **stack, unsigned int line_number);
-
 /**
- * monty_rotl - Rotates the top value of a stack_t linked list to the bottom.
- * @stack: A pointer to the top mode node of a stack_t linked list.
- * @line_number: The current working line number of a Monty bytecodes file.
+ * _rotl - rotates the first element to the bottom and  the second to the top
+ *
+ * @doubly: head of the linked list
+ * @cline: line number;
+ * Return: no return
  */
-void monty_rotl(stack_t **stack, unsigned int line_number)
+void _rotl(stack_t **doubly, unsigned int cline)
 {
-	stack_t *top, *bottom;
+	stack_t *aux1 = NULL;
+	stack_t *aux2 = NULL;
+	(void)cline;
 
-	if ((*stack)->next == NULL || (*stack)->next->next == NULL)
+	if (*doubly == NULL)
 		return;
 
-	top = (*stack)->next;
-	bottom = (*stack)->next;
-	while (bottom->next != NULL)
-		bottom = bottom->next;
-
-	top->next->prev = *stack;
-	(*stack)->next = top->next;
-	bottom->next = top;
-	top->next = NULL;
-	top->prev = bottom;
-
-	(void)line_number;
-}
-
-/**
- * monty_rotr - Rotates the bottom value of a stack_t linked list to the top.
- * @stack: A pointer to the top mode node of a stack_t linked list.
- * @line_number: The current working line number of a Monty bytecodes file.
- */
-void monty_rotr(stack_t **stack, unsigned int line_number)
-{
-	stack_t *top, *bottom;
-
-	if ((*stack)->next == NULL || (*stack)->next->next == NULL)
+	if ((*doubly)->next == NULL)
 		return;
 
-	top = (*stack)->next;
-	bottom = (*stack)->next;
-	while (bottom->next != NULL)
-		bottom = bottom->next;
+	aux1 = (*doubly)->next;
+	aux2 = *doubly;
 
-	bottom->prev->next = NULL;
-	(*stack)->next = bottom;
-	bottom->prev = *stack;
-	bottom->next = top;
-	top->prev = bottom;
+	for (; aux2->next != NULL; aux2 = aux2->next)
+		;
 
-	(void)line_number;
+	aux1->prev = NULL;
+	aux2->next = *doubly;
+	(*doubly)->next = NULL;
+	(*doubly)->prev = aux2;
+	*doubly = aux1;
 }
 
 /**
- * monty_stack - Converts a queue to a stack.
- * @stack: A pointer to the top mode node of a stack_t linked list.
- * @line_number: The current working line number of a Monty bytecodes file.
+ * _rotr - reverse the stack
+ *
+ * @doubly: head of the linked list
+ * @cline: line number
+ * Return: no return
  */
-void monty_stack(stack_t **stack, unsigned int line_number)
+void _rotr(stack_t **doubly, unsigned int cline)
 {
-	(*stack)->n = STACK;
-	(void)line_number;
-}
+	stack_t *aux = NULL;
+	(void)cline;
 
-/**
- * monty_queue - Converts a stack to a queue.
- * @stack: A pointer to the top mode node of a stack_t linked list.
- * @line_number: The current working line number of a Monty bytecodes file.
- */
-void monty_queue(stack_t **stack, unsigned int line_number)
-{
-	(*stack)->n = QUEUE;
-	(void)line_number;
+	if (*doubly == NULL)
+		return;
+
+	if ((*doubly)->next == NULL)
+		return;
+
+	aux = *doubly;
+
+	for (; aux->next != NULL; aux = aux->next)
+		;
+
+	aux->prev->next = NULL;
+	aux->next = *doubly;
+	aux->prev = NULL;
+	(*doubly)->prev = aux;
+	*doubly = aux;
 }

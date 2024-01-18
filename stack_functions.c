@@ -1,66 +1,85 @@
 #include "monty.h"
-#include <string.h>
+/**
+ * _strcmp - Function that compares two strings.
+ * @s1: type str compared
+ * @s2: type str compared
+ * Return: 0 if s1 and s2 are equals.
+ *         another value if they are different
+ */
+int _strcmp(char *s1, char *s2)
+{
+	int i;
 
-void free_stack(stack_t **stack);
-int init_stack(stack_t **stack);
-int check_mode(stack_t *stack);
+	for (i = 0; s1[i] == s2[i] && s1[i]; i++)
+		;
+	if (s1[i] > s2[i])
+		return (1);
+	if (s1[i] < s2[i])
+		return (-1);
+	return (0);
+}
 
 /**
- * free_stack - Frees a stack_t stack.
- * @stack: A pointer to the top (stack) or
- *         bottom (queue) of a stack_t.
+ * _sch - search if a char is inside a string
+ * @s: string to review
+ * @c: char to find
+ * Return: 1 if success 0 if not
  */
-void free_stack(stack_t **stack)
+int _sch(char *s, char c)
 {
-	stack_t *tmp = *stack;
+	int cont = 0;
 
-	while (*stack)
+	while (s[cont] != '\0')
 	{
-		tmp = (*stack)->next;
-		free(*stack);
-		*stack = tmp;
+		if (s[cont] == c)
+		{
+			break;
+		}
+		cont++;
 	}
+	if (s[cont] == c)
+		return (1);
+	else
+		return (0);
 }
 
 /**
- * init_stack - Initializes a stack_t stack with beginning
- *              stack and ending queue nodes.
- * @stack: A pointer to an unitialized stack_t stack.
- *
- * Return: If an error occurs - EXIT_FAILURE.
- *         Otherwise - EXIT_SUCCESS.
+ * _strtoky - function that cut a string into tokens depending of the delimit
+ * @s: string to cut in parts
+ * @d: delimiters
+ * Return: first partition
  */
-int init_stack(stack_t **stack)
+char *_strtoky(char *s, char *d)
 {
-	stack_t *s;
+	static char *ultimo;
+	int i = 0, j = 0;
 
-	s = malloc(sizeof(stack_t));
-	if (s == NULL)
-		return (malloc_error());
-
-	s->n = STACK;
-	s->prev = NULL;
-	s->next = NULL;
-
-	*stack = s;
-
-	return (EXIT_SUCCESS);
-}
-
-/**
- * check_mode - Checks if a stack_t linked list is in stack or queue mode.
- * @stack: A pointer to the top (stack) or bottom (queue)
- *         of a stack_t linked list.
- *
- * Return: If the stack_t is in stack mode - STACK (0).
- *         If the stack_t is in queue mode - QUEUE (1).
- *         Otherwise - 2.
- */
-int check_mode(stack_t *stack)
-{
-	if (stack->n == STACK)
-		return (STACK);
-	else if (stack->n == QUEUE)
-		return (QUEUE);
-	return (2);
+	if (!s)
+		s = ultimo;
+	while (s[i] != '\0')
+	{
+		if (_sch(d, s[i]) == 0 && s[i + 1] == '\0')
+		{
+			ultimo = s + i + 1;
+			*ultimo = '\0';
+			s = s + j;
+			return (s);
+		}
+		else if (_sch(d, s[i]) == 0 && _sch(d, s[i + 1]) == 0)
+			i++;
+		else if (_sch(d, s[i]) == 0 && _sch(d, s[i + 1]) == 1)
+		{
+			ultimo = s + i + 1;
+			*ultimo = '\0';
+			ultimo++;
+			s = s + j;
+			return (s);
+		}
+		else if (_sch(d, s[i]) == 1)
+		{
+			j++;
+			i++;
+		}
+	}
+	return (NULL);
 }
