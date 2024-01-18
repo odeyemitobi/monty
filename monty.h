@@ -5,14 +5,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* Data structures */
 /**
  * struct stack_s - Doubly linked list representation of a stack (or queue)
- * @n: Integer value of the node
- * @prev: Points to the previous element of the stack (or queue)
- * @next: Points to the next element of the stack (or queue)
- *
- * Description: Doubly linked list node structure
- * for stack, queues, LIFO, FIFO
+ * @n: Integer value of the node.
+ * @prev: Pointer to the previous element of the stack (or queue).
+ * @next: Pointer to the next element of the stack (or queue).
  */
 typedef struct stack_s
 {
@@ -22,30 +20,27 @@ typedef struct stack_s
 } stack_t;
 
 /**
- * struct instruction_s - Opcode and its function
- * @opcode: The opcode
- * @f: Function to handle the opcode
- *
- * Description: Opcode and its function
- * for stack, queues, LIFO, FIFO
+ * struct instruction_s - Struct for opcodes and their corresponding functions
+ * @opcode: Opcode.
+ * @f: Function to execute for the opcode.
  */
 typedef struct instruction_s
 {
 	char *opcode;
-	void (*f)(stack_t **stack, unsigned int line_number, char *arg);
+	void (*f)(stack_t **stack);
 } instruction_t;
 
 /* Function prototypes */
-void parse_and_execute(FILE *file, stack_t **stack, instruction_t *opcodes);
-void tokenize_and_execute(char *line, stack_t **stack, instruction_t *opcodes);
-void tokenize_and_execute_helper(stack_t **stack, char *opcode,
-char *arg, instruction_t *opcodes);
+char *_strdup(const char *str);
+int tokenize_and_execute(char *line, stack_t **stack, instruction_t *opcodes);
+int execute_opcode(stack_t **stack, char *opcode, instruction_t *opcodes);
+void free_stack(stack_t *stack);
+void op_push(stack_t **stack);
+void op_pall(stack_t **stack);
+stack_t *add_node(stack_t **stack, int n);
 
-/* Opcode function prototypes */
-void op_push(stack_t **stack, unsigned int line_number, char *arg);
-void op_pall(stack_t **stack, unsigned int line_number);
-
-/* Additional utility function prototypes */
-void free_stack(stack_t **stack);
+/* Additional definitions for compatibility */
+typedef long ssize_t;
+ssize_t getline(char **lineptr, size_t *n, FILE *stream);
 
 #endif /* MONTY_H */
