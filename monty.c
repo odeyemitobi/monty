@@ -124,8 +124,8 @@ int main(int argc, char *argv[])
 	instruction_t opcodes[] = {
 		{"push", op_push},
 		{"pall", op_pall},
-		{NULL, NULL}
-	};
+		{"pint", op_pint},
+		{NULL, NULL}};
 
 	if (argc != 2)
 	{

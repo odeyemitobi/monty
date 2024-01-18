@@ -37,6 +37,7 @@ int execute_opcode(stack_t **stack, char *opcode, instruction_t *opcodes);
 void free_stack(stack_t *stack);
 void op_push(stack_t **stack);
 void op_pall(stack_t **stack);
+void op_pint(stack_t **stack);
 stack_t *add_node(stack_t **stack, int n);
 
 /* Additional definitions for compatibility */
